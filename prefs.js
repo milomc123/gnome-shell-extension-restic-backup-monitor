@@ -1,5 +1,6 @@
 import Adw from 'gi://Adw';
 import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
 
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
@@ -18,7 +19,7 @@ export default class ResticBackupPreferences extends ExtensionPreferences {
 
         const entry = new Gtk.Entry({
             text: settings.get_string('service-name'),
-            placeholder_text: 'home',
+            placeholder_text: GLib.get_host_name() || 'hostname',
             hexpand: true,
         });
 

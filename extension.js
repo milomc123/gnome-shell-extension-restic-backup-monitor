@@ -49,13 +49,13 @@ class BackupIndicator extends SystemIndicator {
 
     _getServiceUnit() {
         const name = this._settings?.get_string('service-name')?.trim();
-        if (!name)
-            return 'restic-backups-home.service';
+        const defaultName = GLib.get_host_name() || 'home';
+        const serviceName = name || defaultName;
 
-        if (name.endsWith('.service'))
-            return name;
+        if (serviceName.endsWith('.service'))
+            return serviceName;
 
-        return `restic-backups-${name}.service`;
+        return `restic-backups-${serviceName}.service`;
     }
 
     _restartMonitor() {

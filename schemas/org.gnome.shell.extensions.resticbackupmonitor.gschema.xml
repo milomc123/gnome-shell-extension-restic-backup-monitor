@@ -2,9 +2,9 @@
 <schemalist>
   <schema id="org.gnome.shell.extensions.resticbackupmonitor" path="/org/gnome/shell/extensions/resticbackupmonitor/">
     <key name="service-name" type="s">
-      <default>'home'</default>
+      <default>''</default>
       <summary>Backup name to monitor</summary>
-      <description>Backup name inserted into restic-backups-{name}.service.</description>
+      <description>Backup name inserted into restic-backups-{name}.service. Defaults to the system hostname when empty.</description>
     </key>
   </schema>
 </schemalist>
