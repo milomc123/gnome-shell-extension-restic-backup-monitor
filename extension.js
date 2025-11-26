@@ -30,6 +30,7 @@ class BackupIndicator extends SystemIndicator {
         super();
 
         this._settings = settings;
+        this._backupInProgress = false;
 
         this._indicator = this._addIndicator();
         this._indicator.iconName = 'emblem-synchronizing-symbolic';
@@ -47,10 +48,14 @@ class BackupIndicator extends SystemIndicator {
         this._restartMonitor();
     }
 
-    _getServiceUnit() {
+    _getServiceName() {
         const name = this._settings?.get_string('service-name')?.trim();
         const defaultName = GLib.get_host_name() || 'home';
-        const serviceName = name || defaultName;
+        return name || defaultName;
+    }
+
+    _getServiceUnit() {
+        const serviceName = this._getServiceName();
 
         if (serviceName.endsWith('.service'))
             return serviceName;
@@ -60,6 +65,8 @@ class BackupIndicator extends SystemIndicator {
 
     _restartMonitor() {
         this._stopMonitor();
+        this._backupInProgress = false;
+
         const unit = this._getServiceUnit();
         const argv = ['journalctl', '-f', '-u', unit, '-n0', '-o', 'cat'];
 
@@ -122,10 +129,18 @@ class BackupIndicator extends SystemIndicator {
 
         if (obj?.message_type === 'status') {
             this._showIndicator();
+            if (!this._backupInProgress) {
+                this._backupInProgress = true;
+                Main.notify('Restic backup started', `Service ${this._getServiceName()}`);
+            }
             return;
         }
 
         if (obj?.message_type === 'summary' || line.includes('Succeeded.')) {
+            if (this._backupInProgress) {
+                this._backupInProgress = false;
+                Main.notify('Restic backup finished', `Service ${this._getServiceName()}`);
+            }
             this._markComplete();
         }
     }
@@ -171,6 +186,7 @@ class BackupIndicator extends SystemIndicator {
             this._subprocess = null;
         }
 
+        this._backupInProgress = false;
         this._indicator.visible = false;
     }
 
