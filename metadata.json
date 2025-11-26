@@ -1,0 +1,9 @@
+{
+  "name": "Restic Backup Monitor",
+  "description": "Shows an icon when a restic backup is in progress",
+  "uuid": "resticbackupmonitor@milomc123.github.io",
+  "settings-schema": "org.gnome.shell.extensions.resticbackupmonitor",
+  "shell-version": [
+    "49"
+  ]
+}
